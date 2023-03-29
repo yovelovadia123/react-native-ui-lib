@@ -44,7 +44,7 @@ export default class CalendarScreen extends Component {
     return (
       <View flex>
         <Incubator.Calendar data={events} staticHeader initialDate={date} onChangeDate={this.onChangeDate}>
-          <Incubator.Calendar.Agenda onEndReached={this.onEndReached} showLoader={showLoader}/>
+          {/* <Incubator.Calendar.Agenda onEndReached={this.onEndReached} showLoader={showLoader}/> */}
         </Incubator.Calendar>
       </View>
     );

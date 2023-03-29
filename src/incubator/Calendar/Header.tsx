@@ -1,9 +1,10 @@
 import React, {useContext, useCallback} from 'react';
 import {StyleSheet, TextInput, LayoutChangeEvent} from 'react-native';
 import Reanimated, {useAnimatedProps} from 'react-native-reanimated';
+import {Gesture, GestureDetector, TapGesture} from 'react-native-gesture-handler';
 import {Colors, Typography} from 'style';
 import View from '../../components/view';
-import Button from '../../components/button';
+import Icon from '../../components/icon';
 import {getDateObject, getMonthForIndex, addMonths, getTimestamp} from './helpers/DateUtils';
 import {HeaderProps, DayNamesFormat, UpdateSource} from './types';
 import CalendarContext from './CalendarContext';
@@ -21,19 +22,20 @@ const Header = (props: HeaderProps) => {
   const {selectedDate, setDate, showWeeksNumbers, staticHeader, setHeaderHeight} = useContext(CalendarContext);
 
   const getNewDate = useCallback((count: number) => {
+    'worklet';
     const newDate = addMonths(selectedDate.value, count);
     const dateObject = getDateObject(newDate);
     return getTimestamp({year: dateObject.year, month: dateObject.month, day: 1});
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const onLeftArrowPress = useCallback(() => {
-    setDate(getNewDate(-1), UpdateSource.MONTH_ARROW);
-  }, [setDate, getNewDate]);
-
-  const onRightArrowPress = useCallback(() => {
+  const gestureRight = Gesture.Tap().onBegin(() => {
     setDate(getNewDate(1), UpdateSource.MONTH_ARROW);
-  }, [setDate, getNewDate]);
+  });
+
+  const gestureLeft = Gesture.Tap().onBegin(() => {
+    setDate(getNewDate(-1), UpdateSource.MONTH_ARROW);
+  });
 
   const animatedProps = useAnimatedProps(() => {
     const dateObject = getDateObject(selectedDate.value);
@@ -53,23 +55,20 @@ const Header = (props: HeaderProps) => {
     return <AnimatedTextInput {...{animatedProps}} editable={false} style={styles.title}/>;
   };
 
-  const renderArrow = (source: number, onPress: () => void) => {
+  const renderArrow = (source: number, gesture: TapGesture) => {
     return (
-      <Button
-        link
-        size={Button.sizes.xSmall}
-        iconSource={source}
-        onPress={onPress}
-      />
+      <GestureDetector gesture={gesture}>
+        <Icon source={source}/>
+      </GestureDetector>
     );
   };
 
   const renderNavigation = () => {
     return (
       <View row spread style={styles.navigation}>
-        {renderArrow(ARROW_BACK, onLeftArrowPress)}
+        {renderArrow(ARROW_BACK, gestureLeft)}
         {renderTitle()}
-        {renderArrow(ARROW_NEXT, onRightArrowPress)}
+        {renderArrow(ARROW_NEXT, gestureRight)}
       </View>
     );
   };

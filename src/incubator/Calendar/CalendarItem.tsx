@@ -6,7 +6,7 @@ import {CalendarItemProps} from './types';
 import CalendarContext from './CalendarContext';
 import Month from './Month';
 import Header from './Header';
-
+import Text from '../../components/text';
 
 const CALENDAR_HEIGHT = 270;
 
@@ -29,6 +29,7 @@ function CalendarItem(props: CalendarItemProps) {
     return (
       <View style={calendarStyle}>
         {!staticHeader && <Header month={month} year={year}/>}
+        <Text red30>{month + 1}-{year}</Text>
         <Month month={month} year={year}/>
       </View>
     );
