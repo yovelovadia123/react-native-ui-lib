@@ -10,7 +10,7 @@ import {isSameDay, isSameMonth} from './helpers/DateUtils';
 import {AgendaProps, InternalEvent, Event, DateSectionHeader, UpdateSource} from './types';
 import CalendarContext from './CalendarContext';
 
-const {FlashList} = FlashListPackage;
+const FlashList = FlashListPackage?.FlashList;
 
 // TODO: Fix initial scrolling
 function Agenda(props: AgendaProps) {
@@ -91,7 +91,7 @@ function Agenda(props: AgendaProps) {
     return selectedDate.value;
   },
   (selected, previous) => {
-    if (updateSource?.value !== UpdateSource.AGENDA_SCROLL) {
+    if (updateSource.value !== UpdateSource.AGENDA_SCROLL) {
       if (
         selected !== previous &&
           (closestSectionHeader.value?.date === undefined || !isSameDay(selected, closestSectionHeader.value?.date))
@@ -138,8 +138,9 @@ function Agenda(props: AgendaProps) {
   }, []);
 
   const _onEndReached = useCallback(() => {
-    onEndReached(selectedDate.value);
-  }, []);
+    onEndReached?.(selectedDate.value);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [onEndReached]);
 
   return (
     <View flex>
