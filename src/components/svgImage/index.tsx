@@ -7,8 +7,8 @@ const SvgCssUri = SvgPackage?.SvgCssUri;
 const SvgCss = SvgPackage?.SvgCss;
 // const SvgProps = SvgPackage?.SvgProps; TODO: not sure how (or if) we can use their props
 
-const fillReg = /fill="(#[0-9a-fA-F]*|[a-z]*)"/g;
-
+const fillReg = /fill="(#[0-9a-fA-F]*|[a-zA-Z]*)"/g;
+type dynamicColorsType = (string | undefined)[];
 export interface SvgImageProps {
   /**
    * the asset tint
@@ -18,10 +18,10 @@ export interface SvgImageProps {
   /**
    * SVG dynamic colors
    */
-  colors?: (string | undefined)[];
+  colors?: dynamicColorsType;
 }
 
-const DynamicColorsChange = (xml: string, colors: string[]) => {
+const DynamicColorsChange = (xml: string, colors: dynamicColorsType) => {
   let index = 0;
   const found = xml.replace(fillReg, match => {
     const replacement = colors[index];
