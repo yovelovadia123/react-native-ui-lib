@@ -21,7 +21,7 @@ import {
 import {RecorderProps} from '../../typings/recorderTypes';
 import {getAsset, isSvg} from '../../utils/imageUtils';
 import Overlay, {OverlayTypeType, OverlayIntensityType} from '../overlay';
-import SvgImage from '../svgImage';
+import SvgImage, {SvgImageProps} from '../svgImage';
 import View from '../view';
 import {Colors} from '../../style';
 
@@ -95,6 +95,10 @@ export type ImageProps = RNImageProps &
      * The image height
      */
     height?: string | number;
+    /**
+     * SVG dynamic colors
+     */
+    colors?: SvgImageProps['colors'];
   };
 
 type Props = ImageProps & ForwardRefInjectedProps & BaseComponentInjectedProps;
