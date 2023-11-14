@@ -7,8 +7,8 @@ const SvgCssUri = SvgPackage?.SvgCssUri;
 const SvgCss = SvgPackage?.SvgCss;
 // const SvgProps = SvgPackage?.SvgProps; TODO: not sure how (or if) we can use their props
 
-const fillReg = /fill="(#[0-9a-fA-F]*|[a-zA-Z]*)"/g;
-type dynamicColorsType = (string | undefined)[];
+const fillReg = /fill="((#[0-9a-fA-F]*)|([a-zA-Z]*))"/g;
+type dynamicColorsType = Record<string, string>;
 export interface SvgImageProps {
   /**
    * the asset tint
@@ -21,14 +21,24 @@ export interface SvgImageProps {
   colors?: dynamicColorsType;
 }
 
-const DynamicColorsChange = (xml: string, colors: dynamicColorsType) => {
-  let index = 0;
-  const found = xml.replace(fillReg, match => {
-    const replacement = colors[index];
-    index += 1;
-    return replacement ? `fill="${replacement}"` : match;
+// const getDynamicColorsChange = (xml: string, colors: dynamicColorsType) => {
+//   let index = 0;
+//   const found = xml.replace(fillReg, match => {
+//     const replacement = colors[index];
+//     index += 1;
+//     return replacement ? `fill="${replacement}"` : match;
+//   });
+//   return found;
+// };
+const getDynamicColorsChange = (xml: string, colors: dynamicColorsType) => {
+  // let index = 0;
+  const changeFillings = xml.replace(fillReg, (match, g1) => {
+    if (g1 in colors) {
+      return `fill="${colors[g1]}"`;
+    }
+    return match;
   });
-  return found;
+  return changeFillings;
 };
 
 function SvgImage(props: SvgImageProps) {
@@ -45,16 +55,16 @@ function SvgImage(props: SvgImageProps) {
       .then(res => res.text())
       .then(setXml)
       .catch(console.log);
-  }, [data, colors]);
+  }, [data]);
   if (!SvgXml) {
     // eslint-disable-next-line max-len
     console.error(`RNUILib Image "svg" prop requires installing "react-native-svg" and "react-native-svg-transformer" dependencies`);
     return null;
   }
   if (isSvgUri(data)) {
-    return <SvgCss {...others} xml={colors && xml ? DynamicColorsChange(xml, colors) : xml}/>;
+    return <SvgCss {...others} xml={colors && xml ? getDynamicColorsChange(xml, colors) : xml}/>;
   } else if (typeof data === 'string') {
-    return <SvgXml xml={colors ? DynamicColorsChange(data, colors as string[]) : data} {...others}/>;
+    return <SvgXml xml={colors ? getDynamicColorsChange(data, colors) : data} {...others}/>;
   } else if (data) {
     const File = data; // Must be with capital letter
     return <File {...others}/>;
