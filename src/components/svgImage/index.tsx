@@ -7,7 +7,7 @@ const SvgCssUri = SvgPackage?.SvgCssUri;
 const SvgCss = SvgPackage?.SvgCss;
 // const SvgProps = SvgPackage?.SvgProps; TODO: not sure how (or if) we can use their props
 
-const fillReg = /fill="#[0-9a-fA-F]*"/g;
+const fillReg = /fill="(#[0-9a-fA-F]*|[a-z]*)"/g;
 
 export interface SvgImageProps {
   /**
@@ -18,7 +18,7 @@ export interface SvgImageProps {
   /**
    * SVG dynamic colors
    */
-  colors?: string[];
+  colors?: (string | undefined)[];
 }
 
 const DynamicColorsChange = (xml: string, colors: string[]) => {
@@ -38,7 +38,6 @@ function SvgImage(props: SvgImageProps) {
   const [xml, setXml] = React.useState<string | null>(null);
 
   React.useEffect(() => {
-    console.log(data);
     if (!isSvgUri(data)) {
       return;
     }
@@ -47,7 +46,6 @@ function SvgImage(props: SvgImageProps) {
       .then(setXml)
       .catch(console.log);
   }, [data, colors]);
-
   if (!SvgXml) {
     // eslint-disable-next-line max-len
     console.error(`RNUILib Image "svg" prop requires installing "react-native-svg" and "react-native-svg-transformer" dependencies`);
@@ -56,7 +54,7 @@ function SvgImage(props: SvgImageProps) {
   if (isSvgUri(data)) {
     return <SvgCss {...others} xml={colors && xml ? DynamicColorsChange(xml, colors) : xml}/>;
   } else if (typeof data === 'string') {
-    return <SvgXml xml={colors ? DynamicColorsChange(data, colors) : xml} {...others}/>;
+    return <SvgXml xml={colors ? DynamicColorsChange(data, colors as string[]) : data} {...others}/>;
   } else if (data) {
     const File = data; // Must be with capital letter
     return <File {...others}/>;
