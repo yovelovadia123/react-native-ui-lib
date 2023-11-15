@@ -41,6 +41,15 @@ const getDynamicColorsChange = (xml: string, colors: dynamicColorsType) => {
   return changeFillings;
 };
 
+const useDynamicColorsXml = (xml: string | null, colors: SvgImageProps['colors']) => {
+  return React.useMemo(() => {
+    if (xml && colors) {
+      return getDynamicColorsChange(xml, colors);
+    }
+    return null;
+  }, [xml, colors]);
+};
+
 function SvgImage(props: SvgImageProps) {
   // tintColor crashes Android, so we're removing this until we properly support it.
   // eslint-disable-next-line no-unused-vars, @typescript-eslint/no-unused-vars
@@ -49,22 +58,29 @@ function SvgImage(props: SvgImageProps) {
 
   React.useEffect(() => {
     if (!isSvgUri(data)) {
-      return;
+      if (typeof data === 'string') {
+        setXml(data);
+        return;
+      }
     }
     fetch(data?.uri)
       .then(res => res.text())
       .then(setXml)
       .catch(console.log);
   }, [data]);
+  const dynamicColorsXml = useDynamicColorsXml(xml, colors);
   if (!SvgXml) {
     // eslint-disable-next-line max-len
     console.error(`RNUILib Image "svg" prop requires installing "react-native-svg" and "react-native-svg-transformer" dependencies`);
     return null;
   }
+
+  const shouldUseDynamicColors = true && colors;
+
   if (isSvgUri(data)) {
-    return <SvgCss {...others} xml={colors && xml ? getDynamicColorsChange(xml, colors) : xml}/>;
+    return <SvgCss {...others} xml={shouldUseDynamicColors ? dynamicColorsXml : xml}/>;
   } else if (typeof data === 'string') {
-    return <SvgXml xml={colors ? getDynamicColorsChange(data, colors) : data} {...others}/>;
+    return <SvgXml xml={shouldUseDynamicColors ? dynamicColorsXml : xml} {...others}/>;
   } else if (data) {
     const File = data; // Must be with capital letter
     return <File {...others}/>;
