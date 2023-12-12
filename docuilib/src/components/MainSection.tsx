@@ -22,7 +22,6 @@ export default () => {
     const data = await response.json();
     const _starsCount = (data.stargazers_count / 1000).toFixed(1);
 
-
     localStorage.setItem(STARS_COUNT_KEY, _starsCount.toString());
     setStarsCount(_starsCount);
   };

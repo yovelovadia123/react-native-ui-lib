@@ -117,6 +117,36 @@ components.forEach(component => {
     content += `\`${prop.type} \` \n\n`;
   });
 
+  if (component.snippet) {
+    const snack = `import React from 'react';
+import {View, ${componentName}} from 'react-native-ui-lib';
+const App = () => {
+  return <View flex>
+    ${component.snippet?.map(item => _.replace(item, new RegExp(/\$[1-9]/, 'g'), '')).join('\n')}
+  </View>
+}
+export default App;
+`;
+    content += `
+<div
+  data-snack-code="${encodeURIComponent(snack)}"
+  data-snack-platform="web"
+  data-snack-preview="true"
+  data-snack-theme="light"
+  data-snack-name="${componentName}"
+  data-snack-dependencies="react-native-ui-lib"
+  style={{
+    overflow: 'hidden',
+    backgroundColor: '#fafafa',
+    borderRadius: '4px',
+    height: '700px',
+    width: '100%'
+  }}
+/>
+`;
+
+  }
+
   const componentParentDir = componentParentName || isParentComponent ? `/${componentParentName || componentName}` : '';
   const dirPath = `${COMPONENTS_DOCS_DIR}/${component.category}${componentParentDir}`;
 
