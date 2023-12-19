@@ -220,6 +220,7 @@ class Carousel extends Component<CarouselProps, CarouselState> {
   }
 
   getCalcIndex(index: number): number {
+    return index;
     // to handle scrollView index issue in Android's RTL layout
     if (Constants.isRTL && Constants.isAndroid) {
       const length = presenter.getChildrenLength(this.props) - 1;
@@ -403,18 +404,28 @@ class Carousel extends Component<CarouselProps, CarouselState> {
   };
 
   renderChildren() {
-    const {children, loop} = this.props;
+    const {children: propsChildren, loop} = this.props;
     const length = presenter.getChildrenLength(this.props);
-
+    const children =
+      Constants.isAndroid && Constants.isRTL ? React.Children.toArray(propsChildren).reverse() : propsChildren;
     const childrenArray = React.Children.map(children, (child, index) => {
       return this.renderChild(child, `${index}`);
     });
 
     if (loop && childrenArray) {
+      // if (Constants.isAndroid && Constants.isRTL) {
+      //   childrenArray = childrenArray.reverse();
+      // }
+      let first = length - 1;
+      let last = 0;
+      if (Constants.isAndroid && Constants.isRTL) {
+        first = 0;
+        last = length - 1;
+      }
       // @ts-ignore
-      childrenArray.unshift(this.renderChild(children[length - 1], `${length - 1}-clone`));
+      childrenArray.unshift(this.renderChild(children[first], `${first}-clone`));
       // @ts-ignore
-      childrenArray.push(this.renderChild(children[0], `${0}-clone`));
+      childrenArray.push(this.renderChild(children[last], `${last}-clone`));
     }
 
     return childrenArray;
@@ -526,6 +537,7 @@ class Carousel extends Component<CarouselProps, CarouselState> {
   }
 
   render() {
+    console.log('currentPage', this.state.currentPage);
     return this.shouldAllowAccessibilityLayout() ? this.renderAccessibleLayout() : this.renderCarousel();
   }
 }
