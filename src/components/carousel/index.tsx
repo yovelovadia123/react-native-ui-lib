@@ -332,7 +332,7 @@ class Carousel extends Component<CarouselProps, CarouselState> {
     const pageSize = horizontal ? pageWidth : pageHeight;
 
     if (offset >= 0) {
-      if (!this.orientationChange) {
+      if (this.orientationChange === true) {
         // Avoid new calculation on orientation change
         const newPage = presenter.calcPageIndex(offset, this.props, pageSize);
         this.setState({currentPage: newPage});
