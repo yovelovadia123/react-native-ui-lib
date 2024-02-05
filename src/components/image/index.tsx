@@ -19,6 +19,7 @@ import {
   MarginModifiers
 } from '../../commons/new';
 import {RecorderProps} from '../../typings/recorderTypes';
+import {ComponentStatics} from '../../typings/common';
 import {getAsset, isSvg} from '../../utils/imageUtils';
 import Overlay, {OverlayTypeType, OverlayIntensityType} from '../overlay';
 import SvgImage from '../svgImage';
@@ -308,4 +309,6 @@ const styles = StyleSheet.create({
 
 hoistNonReactStatic(Image, RNImage);
 export {Image};
-export default asBaseComponent<ImageProps, typeof Image & typeof RNImage>(Image, {modifiersOptions: {margins: true}});
+export default asBaseComponent<ImageProps, ComponentStatics<typeof Image> & ComponentStatics<typeof RNImage>>(Image, {
+  modifiersOptions: {margins: true}
+});
