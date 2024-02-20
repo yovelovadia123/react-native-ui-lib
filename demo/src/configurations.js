@@ -18,13 +18,12 @@ export const loadDemoConfigurations = () => {
   });
 
   Assets.loadAssetsGroup('images.demo', {
-    brokenImage: require('./assets/images/placeholderMissingImage.png'),
-    logo: require('./assets/images/logo.png')
+    brokenImage: require('./assets/images/placeholderMissingImage.png')
   });
 
-  // Assets.loadAssetsGroup('svgs.demo', {
-  //   logo: require('./assets/svgs/headerLogo.svg')
-  // });
+  Assets.loadAssetsGroup('svgs.demo', {
+    logo: require('./assets/svgs/headerLogo.svg').default
+  });
 
   Typography.loadTypographies({
     h1: {...Typography.text40},
