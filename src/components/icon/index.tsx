@@ -88,7 +88,6 @@ const Icon = forwardRef((props: Props, ref: any) => {
 
   const renderImage = () => (
     <Image
-      fsTagName={recorderTag}
       {...others}
       ref={ref}
       source={iconSource}
@@ -96,14 +95,14 @@ const Icon = forwardRef((props: Props, ref: any) => {
     />
   );
 
-  const renderSvg = () => <SvgImage fsTagName={recorderTag} data={source} {...iconSize} {...props}/>;
+  const renderSvg = () => <SvgImage data={source} {...iconSize} {...props}/>;
 
   if (typeof source === 'string' && isBase64ImageContent(source) && Constants.isWeb) {
     return renderImage();
   }
 
   return (
-    <View>
+    <View fsTagName={recorderTag}>
       {isSvg(source) ? renderSvg() : renderImage()}
       {badgeProps && (
         <Badge
