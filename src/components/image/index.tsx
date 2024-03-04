@@ -194,11 +194,14 @@ class Image extends PureComponent<Props, State> {
   };
 
   renderImageWithContainer = () => {
-    const {style, cover, modifiers, width, height} = this.props;
+    const {style, cover, modifiers, width, height, recorderTag} = this.props;
     const {margins} = modifiers;
 
     return (
-      <View style={[{width, height}, margins, style, styles.errorImageContainer, cover && styles.coverImage]}>
+      <View
+        fsTagName={recorderTag}
+        style={[{width, height}, margins, style, styles.errorImageContainer, cover && styles.coverImage]}
+      >
         {this.renderImage(true)}
       </View>
     );
