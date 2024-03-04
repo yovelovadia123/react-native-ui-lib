@@ -277,6 +277,7 @@ class Card extends PureComponent<PropTypes, State> {
         delayPressIn={10}
         activeOpacity={0.6}
         accessibilityState={{selected}}
+        fsTagName="unmask"
         {...others}
         ref={forwardedRef}
       >
