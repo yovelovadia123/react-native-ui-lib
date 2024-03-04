@@ -89,6 +89,7 @@ const Icon = forwardRef((props: Props, ref: any) => {
   const renderImage = () => (
     <Image
       {...others}
+      fsTagName={recorderTag}
       ref={ref}
       source={iconSource}
       style={[style, margins, iconSize, shouldFlipRTL && styles.rtlFlipped, !!tintColor && {tintColor}]}
