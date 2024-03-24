@@ -1,20 +1,26 @@
 import {RadioGroupProps} from './index';
-import {ComponentDriver, ComponentDriverArgs} from '../../testkit/Component.driver';
-import {RadioButtonDriver} from '../radioButton/RadioButton.driver';
+import {
+  ComponentProps,
+  ComponentDriverResult,
+  useComponentDriver
+} from '../../testkit/new/Component.driver';
+import {RadioButtonDriver} from '../radioButton/RadioButton.driver.new';
 
-type RadioGroupDriverArgs = ComponentDriverArgs & {testIDs: {[key: string]: string}}
+type RadioGroupDriverProps = ComponentProps & {testIDs: Record<string, string>};
 
-export class RadioGroupDriver extends ComponentDriver<RadioGroupProps> {
-  private readonly radioButtonDrivers: {[key: string]: RadioButtonDriver};
-  constructor(radioGroupDriverArgs: RadioGroupDriverArgs) {
-    super({...radioGroupDriverArgs});
-
-    this.radioButtonDrivers = {};
-    Object.values(radioGroupDriverArgs.testIDs).forEach((radioButtonTestId: string) =>
-      this.radioButtonDrivers[radioButtonTestId] =
-        new RadioButtonDriver({...radioGroupDriverArgs, testID: radioButtonTestId}));
-  }
-
-  pressOn = async (radioButtonTestId: string) =>
-    this.radioButtonDrivers[radioButtonTestId].press();
+interface RadioGroupDriverInterface extends ComponentDriverResult<RadioGroupProps> {
+  pressOn: (radioButtonTestId: string) => void;
 }
+
+export const RadioGroupDriver = (props: RadioGroupDriverProps): RadioGroupDriverInterface => {
+  const {renderTree, testIDs} = props;
+  const baseDriver = useComponentDriver<RadioGroupDriverProps>(props);
+  const radioButtonDrivers: Record<string, ReturnType<typeof RadioButtonDriver>> = {};
+  Object.values(testIDs).forEach((radioButtonTestId: string) => {
+    radioButtonDrivers[radioButtonTestId] = RadioButtonDriver({renderTree, testID: radioButtonTestId});
+  });
+  return {
+    ...baseDriver,
+    pressOn: (radioButtonTestId: string) => radioButtonDrivers[radioButtonTestId].press()
+  };
+};

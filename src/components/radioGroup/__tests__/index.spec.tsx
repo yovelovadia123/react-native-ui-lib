@@ -1,4 +1,5 @@
 import React from 'react';
+import {render} from '@testing-library/react-native';
 import RadioGroup from '../index';
 import RadioButton from '../../radioButton/index';
 import {RadioGroupDriver} from '../RadioGroup.driver';
@@ -28,12 +29,10 @@ describe('RadioGroup renderer test', () => {
     jest.clearAllMocks();
   });
 
-  afterEach(() => RadioGroupDriver.clear());
-
   it('Press on radio button', async () => {
     const props = {onValueChangeMock};
-    const component = <RadioGroupTestComponent {...props}/>;
-    const driver = new RadioGroupDriver({component, testID, testIDs});
+    const renderTree = render(<RadioGroupTestComponent {...props}/>);
+    const driver = RadioGroupDriver({renderTree, testID, testIDs});
 
     await driver.pressOn(testIDs.radioButtonUp);
 
@@ -43,8 +42,8 @@ describe('RadioGroup renderer test', () => {
 
   it('Press on disabled radio button', async () => {
     const props = {onValueChangeMock, shouldDisable: true};
-    const component = <RadioGroupTestComponent {...props}/>;
-    const driver = new RadioGroupDriver({component, testID, testIDs});
+    const renderTree = render(<RadioGroupTestComponent {...props}/>);
+    const driver = RadioGroupDriver({renderTree, testID, testIDs});
 
     await driver.pressOn(testIDs.radioButtonUp);
 
@@ -53,8 +52,8 @@ describe('RadioGroup renderer test', () => {
 
   it('Press on selected radio button', async () => {
     const props = {onValueChangeMock, initialValue: 'up'};
-    const component = <RadioGroupTestComponent {...props}/>;
-    const driver = new RadioGroupDriver({component, testID, testIDs});
+    const renderTree = render(<RadioGroupTestComponent {...props}/>);
+    const driver = RadioGroupDriver({renderTree, testID, testIDs});
 
     await driver.pressOn(testIDs.radioButtonUp);
 
@@ -64,8 +63,8 @@ describe('RadioGroup renderer test', () => {
 
   it('Press multiple radio buttons', async () => {
     const props = {onValueChangeMock};
-    const component = <RadioGroupTestComponent {...props}/>;
-    const driver = new RadioGroupDriver({component, testID, testIDs});
+    const renderTree = render(<RadioGroupTestComponent {...props}/>);
+    const driver = RadioGroupDriver({renderTree, testID, testIDs});
 
     await driver.pressOn(testIDs.radioButtonUp);
 
