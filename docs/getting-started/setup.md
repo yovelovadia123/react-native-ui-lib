@@ -5,6 +5,29 @@ title: "Setup"
 # path: "/getting-started/setup"
 ---
 
+```jsx live
+function Clock(props) {
+  const [date, setDate] = useState(new Date());
+  useEffect(() => {
+    var timerID = setInterval(() => tick(), 1000);
+
+    return function cleanup() {
+      clearInterval(timerID);
+    };
+  });
+
+  function tick() {
+    setDate(new Date());
+  }
+
+  return (
+    <div>
+      <Text>Hello</Text>
+    </div>
+  );
+}
+```
+
 ## Before You Start: UILib Packages
 
 Starting with version 5.12.0 UILib exports individual packages so you can import only what you need.  
